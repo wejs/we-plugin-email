@@ -5,7 +5,7 @@ We.js email plugin feature, send localizable emails and with html to your users
 ## Installation
 
 ```sh
-npm install --save we-plugin-email
+we i we-plugin-email
 ```
 
 ## Configuration
