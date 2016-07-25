@@ -16,7 +16,138 @@ describe('lib.Email', function () {
     email = we.email;
     done();
   });
-  describe('send', function(){
+
+  describe('send', function() {
+    var oldTrasporter;
+
+    before(function (done) {
+      var transporter = require('nodemailer')
+        .createTransport({
+          transport: 'Stub'
+        });
+
+      oldTrasporter = email.transporter;
+
+      email.transporter = transporter;
+
+      email.we.env = 'dev'
+      email.mailOptions.sendToConsole = false;
+
+      done();
+    });
+
+    after(function(done){
+      email.transporter = oldTrasporter;
+
+      email.we.env = 'test'
+      email.mailOptions.sendToConsole = true;
+
+      done()
+    })
+
+    describe('send_localized_emails', function(){
+
+      it('should send one newsLetter email in pt-br locale', function(done) {
+        var templateVariables = {
+          user: {
+            displayName: 'Rubik magus'
+          },
+          title: 'cool title',
+          siteName: 'DOTA',
+          text: 'something good',
+          locale: 'pt-br'
+        };
+
+        var options = {
+          subject: 'to dota inscribers',
+          to: 'contact@wejs.org'
+        };
+
+        // send email in async
+        email.sendEmail('newsLetter',
+          options, templateVariables,
+        function (err, res, data) {
+          if (err) return done(err);
+
+          assert.equal(data.html, '<!DOCTYPE html>\n<html>\n<head>\n  '+
+            '<title>cool title</title>\n</head>\n<body style="background: blue;">\n  '+
+            '<p>Oi Rubik magus,</p><p>\n  </p><p>something good</p><p>\n  '+
+            '<br>\n  </p><p>Nome do site em pt-br: DOTA</p><p>\n</p></body>\n</html>')
+
+          assert.equal(data.text, 'cool title\n\nSomething in pt-br - Rubik magus')
+
+          done()
+        });
+      })
+
+      it('should send one newsLetter email in en-us (default) locale', function(done) {
+        var templateVariables = {
+          user: {
+            displayName: 'Rubik magus'
+          },
+          title: 'cool title',
+          siteName: 'DOTA',
+          text: 'something good'
+        };
+
+        var options = {
+          subject: 'to dota inscribers',
+          to: 'contact@wejs.org'
+        };
+
+        // send email in async
+        email.sendEmail('newsLetter',
+          options, templateVariables,
+        function (err, res, data) {
+          if (err) return done(err);
+
+          assert.equal(data.html, '<!DOCTYPE html>\n<html>\n<head>\n  '+
+            '<title>cool title</title>\n</head>\n<body style="background: red;">\n  '+
+            '<p>Hi Rubik magus,</p><p>\n  </p><p>something good</p><p>\n  <br>\n  '+
+            '</p><p>Site name en-us: DOTA</p><p>\n</p></body>\n</html>')
+
+          assert.equal(data.text, 'cool title\n\nSomething in en-us - Rubik magus')
+
+          done()
+        });
+      })
+
+      it('should send one newsLetter email in af-za locale', function(done) {
+        var templateVariables = {
+          user: {
+            displayName: 'Rubik magus'
+          },
+          title: 'cool title',
+          siteName: 'DOTA',
+          text: 'something good',
+          locale: 'af-za'
+        };
+
+        var options = {
+          subject: 'to dota inscribers',
+          to: 'contact@wejs.org'
+        };
+
+        // send email in async
+        email.sendEmail('newsLetter',
+          options, templateVariables,
+        function (err, res, data) {
+          if (err) return done(err);
+
+          assert.equal(data.html, '<!DOCTYPE html>\n<html>\n<head>\n  '+
+            '<title>cool title</title>\n</head>\n<body style="background: green;">\n  '+
+            '<p>Hi Rubik magus,</p><p>\n  </p><p>something good</p><p>\n  '+
+            '<br>\n  </p><p>Site name, this is in af-za: DOTA</p><p>\n</p></body>\n</html>')
+
+          assert.equal(data.text, 'cool title\n\nSomething in af-za - Rubik magus')
+
+          done()
+        })
+      })
+    })
+  });
+
+  describe('showDebugEmail', function(){
     it('should run showDebugEmail if are in test env', function (done) {
       var showDebugEmailCalled = false;
       var options = emailStub();
@@ -98,7 +229,6 @@ describe('lib.Email', function () {
         done();
       });
     });
-
 
     it('should run showDebugEmail and print the email in console', function (done) {
       var called_info, called_warn;

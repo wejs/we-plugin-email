@@ -1,13 +1,31 @@
 var projectPath = process.cwd();
 var deleteDir = require('rimraf');
 var testTools = require('we-test-tools');
+var ncp = require('ncp').ncp;
+var mkdirp = require('mkdirp');
 var path = require('path');
 var we;
+
+before(function(callback) {
+  var dest = path.resolve(process.cwd(), 'server/emails');
+
+  mkdirp(dest, function(){
+    ncp(
+      path.resolve(__dirname, 'stubs/emails'),
+      dest, function (err) {
+      if (err) {
+        return callback(err);
+      }
+      callback();
+    });
+  })
+});
 
 before(function(callback) {
   this.slow(100);
 
   testTools.copyLocalConfigIfNotExitst(projectPath, function() {
+
     var We = require('we-core');
     we = new We();
 
@@ -26,6 +44,7 @@ before(function(callback) {
         callback();
       });
     });
+
   });
 });
 
@@ -34,14 +53,7 @@ after(function (callback) {
   we.db.defaultConnection.close();
 
   var tempFolders = [
-    projectPath + '/files/tmp',
-    projectPath + '/files/config',
-    projectPath + '/files/sqlite',
-
-    projectPath + '/files/public/min',
-
-    projectPath + '/files/public/project.css',
-    projectPath + '/files/public/project.js',
+    projectPath + '/server',
     projectPath + '/config/local.js',
   ];
 
@@ -50,6 +62,6 @@ after(function (callback) {
   }, function(err) {
     if (err) throw new Error(err);
     callback();
-  })
+  });
 
 });
