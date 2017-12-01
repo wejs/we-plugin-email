@@ -5,6 +5,8 @@ var email, we;
 function emailStub() {
   return {
     to: 'contact@wejs.org',
+    from: we.config.email.mailOptions.from,
+    subject: we.config.email.mailOptions.subject,
     html: '<h2>Hello world!</h2>',
     test: 'Hello in text'
   }
@@ -14,6 +16,40 @@ describe('lib.Email', function () {
   before(function (done) {
     we = helpers.getWe();
     email = we.email;
+    done();
+  });
+
+  before(function (done) {
+    // add one email type to send:
+    we.config.emailTypes = {
+      siteContact: {
+        label: 'Email de contato do site',
+        templateVariables: {
+          name: {
+            description: 'Nome da pessoa ou organização que está entrando em contato'
+          },
+          phone: {
+            description: 'Telefone da pessoa ou organização'
+          },
+          email: {
+            description: 'Email da pessoa ou organização que está entrando em contato'
+          },
+          message: {
+            description: 'Mensagem da pessoa ou organização que está entrando em contato'
+          },
+          ip: {
+            description: 'IP da pessoa ou organização que está entrando em contato'
+          },
+          siteName: {
+            description: 'Nome deste site'
+          },
+          siteUrl: {
+            description: 'Endereço deste site'
+          }
+        }
+      }
+    };
+
     done();
   });
 
@@ -30,121 +66,20 @@ describe('lib.Email', function () {
 
       email.transporter = transporter;
 
-      email.we.env = 'dev'
+      email.we.env = 'dev';
       email.mailOptions.sendToConsole = false;
 
       done();
     });
 
-    after(function(done){
+    after( function(done) {
       email.transporter = oldTrasporter;
 
-      email.we.env = 'test'
+      email.we.env = 'test';
       email.mailOptions.sendToConsole = true;
 
-      done()
-    })
-
-    describe('send_localized_emails', function(){
-
-      it('should send one newsLetter email in pt-br locale', function(done) {
-        var templateVariables = {
-          user: {
-            displayName: 'Rubik magus'
-          },
-          title: 'cool title',
-          siteName: 'DOTA',
-          text: 'something good',
-          locale: 'pt-br'
-        };
-
-        var options = {
-          subject: 'to dota inscribers',
-          to: 'contact@wejs.org'
-        };
-
-        // send email in async
-        email.sendEmail('newsLetter',
-          options, templateVariables,
-        function (err, res, data) {
-          if (err) return done(err);
-
-          assert.equal(data.html, '<!DOCTYPE html>\n<html>\n<head>\n  '+
-            '<title>cool title</title>\n</head>\n<body style="background: blue;">\n  '+
-            '<p>Oi Rubik magus,</p><p>\n  </p><p>something good</p><p>\n  '+
-            '<br>\n  </p><p>Nome do site em pt-br: DOTA</p><p>\n</p></body>\n</html>')
-
-          assert.equal(data.text, 'cool title\n\nSomething in pt-br - Rubik magus')
-
-          done()
-        });
-      })
-
-      it('should send one newsLetter email in en-us (default) locale', function(done) {
-        var templateVariables = {
-          user: {
-            displayName: 'Rubik magus'
-          },
-          title: 'cool title',
-          siteName: 'DOTA',
-          text: 'something good'
-        };
-
-        var options = {
-          subject: 'to dota inscribers',
-          to: 'contact@wejs.org'
-        };
-
-        // send email in async
-        email.sendEmail('newsLetter',
-          options, templateVariables,
-        function (err, res, data) {
-          if (err) return done(err);
-
-          assert.equal(data.html, '<!DOCTYPE html>\n<html>\n<head>\n  '+
-            '<title>cool title</title>\n</head>\n<body style="background: red;">\n  '+
-            '<p>Hi Rubik magus,</p><p>\n  </p><p>something good</p><p>\n  <br>\n  '+
-            '</p><p>Site name en-us: DOTA</p><p>\n</p></body>\n</html>')
-
-          assert.equal(data.text, 'cool title\n\nSomething in en-us - Rubik magus')
-
-          done()
-        });
-      })
-
-      it('should send one newsLetter email in af-za locale', function(done) {
-        var templateVariables = {
-          user: {
-            displayName: 'Rubik magus'
-          },
-          title: 'cool title',
-          siteName: 'DOTA',
-          text: 'something good',
-          locale: 'af-za'
-        };
-
-        var options = {
-          subject: 'to dota inscribers',
-          to: 'contact@wejs.org'
-        };
-
-        // send email in async
-        email.sendEmail('newsLetter',
-          options, templateVariables,
-        function (err, res, data) {
-          if (err) return done(err);
-
-          assert.equal(data.html, '<!DOCTYPE html>\n<html>\n<head>\n  '+
-            '<title>cool title</title>\n</head>\n<body style="background: green;">\n  '+
-            '<p>Hi Rubik magus,</p><p>\n  </p><p>something good</p><p>\n  '+
-            '<br>\n  </p><p>Site name, this is in af-za: DOTA</p><p>\n</p></body>\n</html>')
-
-          assert.equal(data.text, 'cool title\n\nSomething in af-za - Rubik magus')
-
-          done()
-        })
-      })
-    })
+      done();
+    });
   });
 
   describe('showDebugEmail', function(){
@@ -198,33 +133,6 @@ describe('lib.Email', function () {
         email.showDebugEmail = old_showDebugEmail;
         we.env = old_env;
         email.mailOptions.sendToConsole = old_sendToConsole;
-
-        done();
-      });
-    });
-
-    it('should run showDebugEmail and set to as email option', function (done) {
-      var showDebugEmailCalled = false;
-      var options = emailStub();
-      options.email = options.to;
-      delete options.to;
-
-      var old_showDebugEmail = email.showDebugEmail;
-      email.showDebugEmail = function(opts) {
-        assert.equal(opts.from, email.mailOptions.from);
-        assert.equal(opts.subject, email.mailOptions.subject);
-        assert.equal(opts.to, options.email);
-        assert.equal(opts.html, options.html);
-        assert.equal(opts.text, options.text);
-        showDebugEmailCalled = true;
-      }
-
-      email.send(options, function (err) {
-        if (err) return done(err);
-
-        assert(showDebugEmailCalled, 'showDebugEmail not run');
-
-        email.showDebugEmail = old_showDebugEmail;
 
         done();
       });

@@ -6,20 +6,20 @@ var mkdirp = require('mkdirp');
 var path = require('path');
 var we;
 
-before(function(callback) {
-  var dest = path.resolve(process.cwd(), 'server/emails');
+// before(function(callback) {
+//   var dest = path.resolve(process.cwd(), 'server/emails');
 
-  mkdirp(dest, function(){
-    ncp(
-      path.resolve(__dirname, 'stubs/emails'),
-      dest, function (err) {
-      if (err) {
-        return callback(err);
-      }
-      callback();
-    });
-  })
-});
+//   mkdirp(dest, function(){
+//     ncp(
+//       path.resolve(__dirname, 'stubs/emails'),
+//       dest, function (err) {
+//       if (err) {
+//         return callback(err);
+//       }
+//       callback();
+//     });
+//   })
+// });
 
 before(function(callback) {
   this.slow(100);
@@ -53,11 +53,10 @@ after(function (callback) {
   we.db.defaultConnection.close();
 
   var tempFolders = [
-    projectPath + '/server',
     projectPath + '/config/local.js',
   ];
 
-  we.utils.async.each(tempFolders, function(folder, next){
+  we.utils.async.each(tempFolders, function(folder, next) {
     deleteDir( folder, next);
   }, function(err) {
     if (err) throw new Error(err);
