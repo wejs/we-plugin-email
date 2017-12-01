@@ -1,10 +1,10 @@
 /**
  * We.js email plugin feature
  */
-var Email = require('./lib/Email');
+const Email = require('./lib/Email');
 
 module.exports = function loadPlugin(projectPath, Plugin) {
-  var plugin = new Plugin(__dirname);
+  const plugin = new Plugin(__dirname);
 
   plugin.setConfigs({
     emailTypes: {},
@@ -80,8 +80,8 @@ module.exports = function loadPlugin(projectPath, Plugin) {
 
   plugin.cacheCurrentSSEmailConfig = function cacheCurrentSSEmailConfig(we, done) {
 
-    for (var i = 0; i < plugin.emailSSAttrs.length; i++) {
-      var name = plugin.emailSSAttrs[i];
+    for (let i = 0; i < plugin.emailSSAttrs.length; i++) {
+      let name = plugin.emailSSAttrs[i];
 
       if (we.systemSettings[name] === undefined) {
         delete plugin.cachedSS[name];

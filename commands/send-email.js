@@ -2,7 +2,7 @@ module.exports = function sendEmailCommand(program, helpers) {
   /**
    * Command to send emails with current project configuration and emails
    */
-  var we, templateVariables;
+  let we, templateVariables;
 
   program
   .command('send-email')
@@ -20,10 +20,10 @@ module.exports = function sendEmailCommand(program, helpers) {
       return process.exit();
     }
 
-    we.bootstrap(function (err) {
+    we.bootstrap( (err)=> {
       if (err) return doneAll(err);
 
-      var options = {
+      const options = {
         subject: opts.subject,
         to: opts.to,
         html: opts.html,
@@ -48,7 +48,7 @@ module.exports = function sendEmailCommand(program, helpers) {
       we.log.error('Error on send email:', err);
     }
     // end / exit
-    we.exit(function () { process.exit(); });
+    we.exit(process.exit);
   }
 
 }
