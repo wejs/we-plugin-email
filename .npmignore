@@ -7,4 +7,3 @@ files/uploads
 .gitignore
 *.log
 config
-server
