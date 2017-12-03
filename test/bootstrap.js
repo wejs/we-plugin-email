@@ -49,18 +49,20 @@ before(function(callback) {
 });
 
 //after all tests
-after(function (callback) {
-  we.db.defaultConnection.close();
+after(function () {
+  we.exit( ()=> {
 
-  var tempFolders = [
-    projectPath + '/config/local.js',
-  ];
+    var tempFolders = [
+      projectPath + '/config/local.js',
+    ];
 
-  we.utils.async.each(tempFolders, function(folder, next) {
-    deleteDir( folder, next);
-  }, function(err) {
-    if (err) throw new Error(err);
-    callback();
+    we.utils.async.each(tempFolders, function(folder, next) {
+      deleteDir( folder, next);
+    }, function(err) {
+      if (err) throw new Error(err);
+      process.exit();
+    });
+
   });
 
 });

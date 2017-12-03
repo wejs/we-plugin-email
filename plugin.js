@@ -53,7 +53,6 @@ module.exports = function loadPlugin(projectPath, Plugin) {
   plugin.setResource({ name: 'email' });
 
   plugin.emailSSAttrs = [
-    'smtp__replyTo',
     'smtp__port',
     'smtp__auth__user',
     'smtp__auth__pass',
@@ -62,6 +61,7 @@ module.exports = function loadPlugin(projectPath, Plugin) {
     'smtp__service',
     'smtp__name',
     // default mail options:
+    'smtp__mailOptions__replyTo',
     'smtp__mailOptions__sendToConsole',
     'smtp__mailOptions__from',
     'smtp__mailOptions__subject',
