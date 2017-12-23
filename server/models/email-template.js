@@ -1,6 +1,9 @@
 /**
  * Email template model
  */
+const Handlebars = require('handlebars'),
+  compile = Handlebars.compile;
+
 module.exports = function emailTemplateModel(we) {
   const _ = we.utils._;
   _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
@@ -33,7 +36,6 @@ module.exports = function emailTemplateModel(we) {
           if (!this.type) {
             return {};
           }
-
           return we.config.emailTypes[ this.type ] || {};
         }
       }
@@ -48,21 +50,22 @@ module.exports = function emailTemplateModel(we) {
             let result = {};
 
             if (this.subject) {
-              result.subject = _.template(this.subject)(templateVariables);
+
+              result.subject = compile(this.subject)(templateVariables);
             } else if (typeSettings.defaultSubject) {
-              result.subject = _.template(typeSettings.defaultSubject)(templateVariables);
+              result.subject = compile(typeSettings.defaultSubject)(templateVariables);
             }
 
             if (this.text) {
-              result.text = _.template(this.text)(templateVariables);
+              result.text = compile(this.text)(templateVariables);
             } else if (typeSettings.defaultText) {
-              result.text = _.template(typeSettings.defaultSubject)(templateVariables);
+              result.text = compile(typeSettings.defaultSubject)(templateVariables);
             }
 
             if (this.html) {
-              result.html = _.template(this.html)(templateVariables);
+              result.html = compile(this.html)(templateVariables);
             } else if (typeSettings.defaultHTML) {
-              result.html = _.template(typeSettings.defaultHTML)(templateVariables);
+              result.html = compile(typeSettings.defaultHTML)(templateVariables);
             }
 
             resolve(result);
