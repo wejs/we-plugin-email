@@ -12,19 +12,19 @@
   ],
   "dependencies": {
     "handlebars": "^4.0.11",
-    "nodemailer": "4.4.0",
+    "nodemailer": "4.6.7",
     "nodemailer-smtp-transport": "2.7.4"
   },
   "devDependencies": {
-    "express-mysql-session": "^1.2.3",
-    "fs-extra": "^4.0.2",
+    "express-mysql-session": "^2.0.0",
+    "fs-extra": "^7.0.0",
     "istanbul": "0.4.5",
-    "mocha": "^4.0.1",
+    "mocha": "^5.2.0",
     "mysql": "^2.15.0",
     "nodemailer-stub-transport": "^1.1.0",
     "rimraf": "^2.6.2",
-    "supertest": "^3.0.0",
-    "we-core": "1.12.13",
+    "supertest": "^3.1.0",
+    "we-core": "2.0.4",
     "we-test-tools": "wejs/we-test-tools"
   },
   "license": "MIT",
