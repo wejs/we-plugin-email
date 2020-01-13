@@ -39,7 +39,7 @@ module.exports = function emailModel(we) {
         skipSanitizer: true
       },
       variables: {
-        type: we.db.Sequelize.TEXT,
+        type: we.db.Sequelize.VIRTUAL,
         allowNull: true,
         skipSanitizer: true,
         get()  {

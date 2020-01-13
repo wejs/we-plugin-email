@@ -2,7 +2,13 @@ files/uploads
 node_modules
 coverage
 config
+<<<<<<< HEAD
 .nyc_output
 *.log
 *.sqlite
 *.sql
+=======
+*.log
+yarn.lock
+package-lock.json
+>>>>>>> 63bcbdc06c57376e59962813b70938a5e671e9b3
