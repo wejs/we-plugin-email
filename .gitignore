@@ -2,4 +2,7 @@ files/uploads
 node_modules
 coverage
 config
+.nyc_output
 *.log
+*.sqlite
+*.sql

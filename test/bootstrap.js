@@ -1,15 +1,16 @@
-var projectPath = process.cwd();
-var deleteDir = require('rimraf');
-var testTools = require('we-test-tools');
-var path = require('path');
-var we;
+const projectPath = process.cwd(),
+  deleteDir = require('rimraf'),
+  testTools = require('we-test-tools'),
+  path = require('path');
+
+let we;
 
 before(function(callback) {
   this.slow(100);
 
-  testTools.copyLocalConfigIfNotExitst(projectPath, function() {
+  testTools.copyLocalSQLiteConfigIfNotExists(projectPath, function() {
 
-    var We = require('we-core');
+    const We = require('we-core');
     we = new We();
 
     testTools.init({}, we);
@@ -35,8 +36,9 @@ before(function(callback) {
 after(function () {
   we.exit( ()=> {
 
-    var tempFolders = [
+    let tempFolders = [
       projectPath + '/config/local.js',
+      projectPath + '/database-test.sqlite',
     ];
 
     we.utils.async.each(tempFolders, function(folder, next) {
@@ -45,7 +47,5 @@ after(function () {
       if (err) throw new Error(err);
       process.exit();
     });
-
   });
-
 });
