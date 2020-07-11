@@ -2,7 +2,8 @@
  * Email template model
  */
 const Handlebars = require('handlebars'),
-  compile = Handlebars.compile;
+  compile = Handlebars.compile,
+  juice = require('juice');
 
 module.exports = function emailTemplateModel(we) {
   const _ = we.utils._;
@@ -20,11 +21,13 @@ module.exports = function emailTemplateModel(we) {
       },
       css: {
         type: we.db.Sequelize.TEXT,
-        allowNull: true
+        allowNull: true,
+        skipSanitizer: true
       },
       html: {
         type: we.db.Sequelize.TEXT,
-        allowNull: true
+        allowNull: true,
+        skipSanitizer: true
       },
       type: {
         type: we.db.Sequelize.STRING,
@@ -68,7 +71,12 @@ module.exports = function emailTemplateModel(we) {
               result.html = compile(typeSettings.defaultHTML)(templateVariables);
             }
 
-            resolve(result);
+            if (result.html && this.css) {
+              result.html = '<style>' + this.css + '</style>';
+              result.html = juice(result.html);
+            } else {
+              resolve(result);
+            }
           });
         }
       },
