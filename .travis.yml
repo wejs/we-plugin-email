@@ -1,3 +1,4 @@
+---
 language: node_js
 
 node_js:
@@ -14,6 +15,6 @@ notifications:
     - alberto@wejs.org
 
 after_success:
-- npm install coveralls
-- npm run coverage
-- cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+  - npm install coveralls
+  - npm run coverage
+  - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
