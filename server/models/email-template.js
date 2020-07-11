@@ -72,8 +72,10 @@ module.exports = function emailTemplateModel(we) {
             }
 
             if (result.html && this.css) {
-              result.html = '<style>' + this.css + '</style>';
+              result.html = '<style>' + this.css + '</style>' + result.html;
               result.html = juice(result.html);
+
+              resolve(result);
             } else {
               resolve(result);
             }
